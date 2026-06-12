@@ -5,13 +5,21 @@ import {
   collection,
   addDoc,
   getDocs,
+  deleteDoc,
+  doc,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+
+type Note = {
+  id: string;
+  title: string;
+  content: string;
+};
 
 export default function NotesPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [notes, setNotes] = useState<any[]>([]);
+  const [notes, setNotes] = useState<Note[]>([]);
 
   const loadNotes = async () => {
     try {
@@ -21,7 +29,7 @@ export default function NotesPage() {
 
       const notesData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data(),
+        ...(doc.data() as Omit<Note, "id">),
       }));
 
       setNotes(notesData);
@@ -47,15 +55,26 @@ export default function NotesPage() {
         createdAt: new Date(),
       });
 
-      await loadNotes();
-
       setTitle("");
       setContent("");
+
+      await loadNotes();
 
       alert("Note saved to Firebase!");
     } catch (error) {
       console.error(error);
       alert("Error saving note");
+    }
+  };
+
+  const deleteNote = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, "notes", id));
+
+      await loadNotes();
+    } catch (error) {
+      console.error(error);
+      alert("Error deleting note");
     }
   };
 
@@ -92,7 +111,7 @@ export default function NotesPage() {
 
         <button
           onClick={saveNote}
-          className="mt-4 bg-blue-500 px-5 py-2 rounded-lg font-semibold"
+          className="mt-4 bg-blue-500 hover:bg-blue-600 px-5 py-2 rounded-lg font-semibold"
         >
           Save Note
         </button>
@@ -103,22 +122,35 @@ export default function NotesPage() {
           Your Notes ({notes.length})
         </h2>
 
-        <div className="mt-6 space-y-4">
-          {notes.map((note) => (
-            <div
-              key={note.id}
-              className="border border-gray-700 rounded-xl p-4"
-            >
-              <h3 className="text-lg font-bold">
-                {note.title}
-              </h3>
+        {notes.length === 0 ? (
+          <p className="text-gray-500 mt-4">
+            No notes yet.
+          </p>
+        ) : (
+          <div className="mt-6 space-y-4">
+            {notes.map((note) => (
+              <div
+                key={note.id}
+                className="border border-gray-700 rounded-xl p-4"
+              >
+                <h3 className="text-lg font-bold">
+                  {note.title}
+                </h3>
 
-              <p className="text-gray-400 mt-2">
-                {note.content}
-              </p>
-            </div>
-          ))}
-        </div>
+                <p className="text-gray-400 mt-2">
+                  {note.content}
+                </p>
+
+                <button
+                  onClick={() => deleteNote(note.id)}
+                  className="mt-4 bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg"
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </>
   );
