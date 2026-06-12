@@ -1,4 +1,28 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
 export default function Dashboard() {
+  const [noteCount, setNoteCount] = useState(0);
+
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const querySnapshot = await getDocs(
+          collection(db, "notes")
+        );
+
+        setNoteCount(querySnapshot.size);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadStats();
+  }, []);
+
   return (
     <>
       <h1 className="text-4xl font-bold">
@@ -17,7 +41,7 @@ export default function Dashboard() {
           </h3>
 
           <p className="text-4xl font-bold mt-4">
-            0
+            {noteCount}
           </p>
         </div>
 
@@ -27,7 +51,7 @@ export default function Dashboard() {
           </h3>
 
           <p className="text-4xl font-bold mt-4">
-            0
+            Coming Soon
           </p>
         </div>
 
@@ -37,7 +61,7 @@ export default function Dashboard() {
           </h3>
 
           <p className="text-4xl font-bold mt-4">
-            0
+            Coming Soon
           </p>
         </div>
 
