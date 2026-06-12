@@ -6,6 +6,7 @@ import {
   addDoc,
   getDocs,
   deleteDoc,
+  updateDoc,
   doc,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -20,6 +21,7 @@ export default function NotesPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [notes, setNotes] = useState<Note[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const loadNotes = async () => {
     try {
@@ -60,10 +62,38 @@ export default function NotesPage() {
 
       await loadNotes();
 
-      alert("Note saved to Firebase!");
+      alert("Note saved!");
     } catch (error) {
       console.error(error);
       alert("Error saving note");
+    }
+  };
+
+  const editNote = (note: Note) => {
+    setEditingId(note.id);
+    setTitle(note.title);
+    setContent(note.content);
+  };
+
+  const updateNote = async () => {
+    try {
+      if (!editingId) return;
+
+      await updateDoc(doc(db, "notes", editingId), {
+        title,
+        content,
+      });
+
+      setEditingId(null);
+      setTitle("");
+      setContent("");
+
+      await loadNotes();
+
+      alert("Note updated!");
+    } catch (error) {
+      console.error(error);
+      alert("Error updating note");
     }
   };
 
@@ -90,7 +120,7 @@ export default function NotesPage() {
 
       <div className="mt-8 border border-gray-800 rounded-xl p-6">
         <h2 className="text-xl font-semibold mb-4">
-          Create New Note
+          {editingId ? "Edit Note" : "Create New Note"}
         </h2>
 
         <input
@@ -110,11 +140,24 @@ export default function NotesPage() {
         />
 
         <button
-          onClick={saveNote}
+          onClick={editingId ? updateNote : saveNote}
           className="mt-4 bg-blue-500 hover:bg-blue-600 px-5 py-2 rounded-lg font-semibold"
         >
-          Save Note
+          {editingId ? "Update Note" : "Save Note"}
         </button>
+
+        {editingId && (
+          <button
+            onClick={() => {
+              setEditingId(null);
+              setTitle("");
+              setContent("");
+            }}
+            className="mt-4 ml-2 bg-gray-600 hover:bg-gray-700 px-5 py-2 rounded-lg font-semibold"
+          >
+            Cancel
+          </button>
+        )}
       </div>
 
       <div className="mt-8 border border-gray-800 rounded-xl p-6">
@@ -141,12 +184,21 @@ export default function NotesPage() {
                   {note.content}
                 </p>
 
-                <button
-                  onClick={() => deleteNote(note.id)}
-                  className="mt-4 bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg"
-                >
-                  Delete
-                </button>
+                <div className="mt-4 flex gap-2">
+                  <button
+                    onClick={() => editNote(note)}
+                    className="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded-lg"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    onClick={() => deleteNote(note.id)}
+                    className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             ))}
           </div>
