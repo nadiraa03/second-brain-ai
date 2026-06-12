@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
 import {
   collection,
   addDoc,
@@ -8,8 +10,13 @@ import {
   deleteDoc,
   updateDoc,
   doc,
+  query,
+  where,
 } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+
+import { onAuthStateChanged } from "firebase/auth";
+
+import { db, auth } from "@/lib/firebase";
 
 type Note = {
   id: string;
@@ -18,6 +25,8 @@ type Note = {
 };
 
 export default function NotesPage() {
+  const router = useRouter();
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [notes, setNotes] = useState<Note[]>([]);
@@ -25,9 +34,16 @@ export default function NotesPage() {
 
   const loadNotes = async () => {
     try {
-      const querySnapshot = await getDocs(
-        collection(db, "notes")
+      const user = auth.currentUser;
+
+      if (!user) return;
+
+      const q = query(
+        collection(db, "notes"),
+        where("userId", "==", user.uid)
       );
+
+      const querySnapshot = await getDocs(q);
 
       const notesData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
@@ -41,7 +57,18 @@ export default function NotesPage() {
   };
 
   useEffect(() => {
-    loadNotes();
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (user) => {
+        if (!user) {
+          router.push("/login");
+        } else {
+          loadNotes();
+        }
+      }
+    );
+
+    return () => unsubscribe();
   }, []);
 
   const saveNote = async () => {
@@ -51,9 +78,17 @@ export default function NotesPage() {
         return;
       }
 
+      const user = auth.currentUser;
+
+      if (!user) {
+        alert("Please login first");
+        return;
+      }
+
       await addDoc(collection(db, "notes"), {
         title,
         content,
+        userId: user.uid,
         createdAt: new Date(),
       });
 
