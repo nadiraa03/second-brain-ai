@@ -1,12 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const router = useRouter();
 
   const login = async () => {
     try {
@@ -16,7 +20,7 @@ export default function LoginPage() {
         password
       );
 
-      alert("Login successful!");
+      router.push("/dashboard");
     } catch (error) {
       console.error(error);
       alert("Login failed");
@@ -24,32 +28,47 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-20">
-      <h1 className="text-4xl font-bold mb-6">
-        Login
-      </h1>
+    <main className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="w-full max-w-md border border-gray-800 rounded-xl p-8">
 
-      <input
-        type="email"
-        placeholder="Email"
-        className="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg mb-4 text-white"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+        <h1 className="text-4xl font-bold mb-6">
+          Login
+        </h1>
 
-      <input
-        type="password"
-        placeholder="Password"
-        className="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg mb-4 text-white"
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg mb-4 text-white placeholder-gray-400"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-      <button
-        onClick={login}
-        className="bg-green-500 px-5 py-2 rounded-lg"
-      >
-        Login
-      </button>
-    </div>
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg mb-4 text-white placeholder-gray-400"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <button
+          onClick={login}
+          className="w-full bg-green-500 hover:bg-green-600 py-3 rounded-lg font-semibold"
+        >
+          Login
+        </button>
+
+        <p className="mt-6 text-gray-400 text-center">
+          Don't have an account?{" "}
+          <Link
+            href="/signup"
+            className="text-blue-400 hover:text-blue-300"
+          >
+            Sign Up
+          </Link>
+        </p>
+
+      </div>
+    </main>
   );
 }
