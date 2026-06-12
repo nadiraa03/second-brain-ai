@@ -31,6 +31,13 @@ export default function NotesPage() {
   const [content, setContent] = useState("");
   const [notes, setNotes] = useState<Note[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+
+  const filteredNotes = notes.filter(
+    (note) =>
+      note.title.toLowerCase().includes(search.toLowerCase()) ||
+      note.content.toLowerCase().includes(search.toLowerCase())
+  );
 
   const loadNotes = async () => {
     try {
@@ -57,16 +64,13 @@ export default function NotesPage() {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      (user) => {
-        if (!user) {
-          router.push("/login");
-        } else {
-          loadNotes();
-        }
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        router.push("/login");
+      } else {
+        loadNotes();
       }
-    );
+    });
 
     return () => unsubscribe();
   }, []);
@@ -145,9 +149,7 @@ export default function NotesPage() {
 
   return (
     <>
-      <h1 className="text-4xl font-bold">
-        Notes
-      </h1>
+      <h1 className="text-4xl font-bold">Notes</h1>
 
       <p className="text-gray-400 mt-2">
         Create and manage your knowledge.
@@ -197,16 +199,24 @@ export default function NotesPage() {
 
       <div className="mt-8 border border-gray-800 rounded-xl p-6">
         <h2 className="text-xl font-semibold">
-          Your Notes ({notes.length})
+          Your Notes ({filteredNotes.length})
         </h2>
 
-        {notes.length === 0 ? (
+        <input
+          type="text"
+          placeholder="🔍 Search notes..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full mt-4 bg-gray-900 border border-gray-700 rounded-lg p-3 text-white placeholder-gray-400"
+        />
+
+        {filteredNotes.length === 0 ? (
           <p className="text-gray-500 mt-4">
-            No notes yet.
+            No notes found.
           </p>
         ) : (
           <div className="mt-6 space-y-4">
-            {notes.map((note) => (
+            {filteredNotes.map((note) => (
               <div
                 key={note.id}
                 className="border border-gray-700 rounded-xl p-4"
