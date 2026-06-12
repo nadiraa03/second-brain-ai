@@ -1,34 +1,50 @@
+import Link from "next/link";
+
 export default function Dashboard() {
   return (
     <main className="min-h-screen bg-black text-white">
       <div className="flex">
 
-        {/* Sidebar */}
         <aside className="w-64 min-h-screen border-r border-gray-800 p-6">
+
           <h1 className="text-2xl font-bold">
             Second Brain AI
           </h1>
 
           <nav className="mt-10 space-y-4">
-            <button className="block text-left w-full hover:text-blue-400">
+
+            <Link
+              href="/dashboard"
+              className="block hover:text-blue-400"
+            >
               Dashboard
-            </button>
+            </Link>
 
-            <button className="block text-left w-full hover:text-blue-400">
+            <Link
+              href="/notes"
+              className="block hover:text-blue-400"
+            >
               Notes
-            </button>
+            </Link>
 
-            <button className="block text-left w-full hover:text-blue-400">
+            <Link
+              href="/graph"
+              className="block hover:text-blue-400"
+            >
               Knowledge Graph
-            </button>
+            </Link>
 
-            <button className="block text-left w-full hover:text-blue-400">
+            <Link
+              href="/settings"
+              className="block hover:text-blue-400"
+            >
               Settings
-            </button>
+            </Link>
+
           </nav>
+
         </aside>
 
-        {/* Main Content */}
         <section className="flex-1 p-8">
 
           <h2 className="text-4xl font-bold">
@@ -74,6 +90,7 @@ export default function Dashboard() {
           </div>
 
           <div className="mt-10 border border-gray-800 rounded-xl p-6">
+
             <h3 className="text-xl font-semibold">
               Recent Notes
             </h3>
@@ -82,9 +99,13 @@ export default function Dashboard() {
               No notes yet. Create your first note.
             </p>
 
-            <button className="mt-5 bg-white text-black px-5 py-2 rounded-lg font-semibold">
+            <Link
+              href="/notes"
+              className="inline-block mt-5 bg-white text-black px-5 py-2 rounded-lg font-semibold"
+            >
               + Create Note
-            </button>
+            </Link>
+
           </div>
 
         </section>
