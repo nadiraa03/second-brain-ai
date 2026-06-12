@@ -11,12 +11,15 @@ export default function Home() {
             Second Brain AI
           </h1>
 
-          <button className="border border-gray-700 px-4 py-2 rounded-lg hover:bg-white hover:text-black transition">
+          <Link
+            href="/login"
+            className="border border-gray-700 px-4 py-2 rounded-lg hover:bg-white hover:text-black transition"
+          >
             Login
-          </button>
+          </Link>
         </nav>
 
-        {/* Hero Section */}
+        {/* Hero */}
         <section className="flex flex-col items-center justify-center text-center min-h-[80vh]">
 
           <p className="text-blue-400 uppercase tracking-widest">
@@ -37,7 +40,7 @@ export default function Home() {
           <div className="flex gap-4 mt-8">
 
             <Link
-              href="/dashboard"
+              href="/signup"
               className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:scale-105 transition"
             >
               Get Started
@@ -54,7 +57,7 @@ export default function Home() {
 
         </section>
 
-        {/* About Section */}
+        {/* About */}
         <section
           id="about"
           className="py-20 border-t border-gray-800"
@@ -74,6 +77,7 @@ export default function Home() {
               <h3 className="text-xl font-semibold">
                 Smart Notes
               </h3>
+
               <p className="text-gray-400 mt-2">
                 Organize and manage all your ideas in one place.
               </p>
@@ -83,6 +87,7 @@ export default function Home() {
               <h3 className="text-xl font-semibold">
                 Knowledge Graph
               </h3>
+
               <p className="text-gray-400 mt-2">
                 Visualize how your ideas connect together.
               </p>
@@ -92,6 +97,7 @@ export default function Home() {
               <h3 className="text-xl font-semibold">
                 AI Insights
               </h3>
+
               <p className="text-gray-400 mt-2">
                 Let AI discover patterns and suggest connections.
               </p>
