@@ -1,6 +1,6 @@
 export default function NotesPage() {
   return (
-    <main className="min-h-screen bg-black text-white p-8">
+    <>
       <h1 className="text-4xl font-bold">
         Notes
       </h1>
@@ -9,11 +9,9 @@ export default function NotesPage() {
         Create and manage your knowledge.
       </p>
 
-      <div className="mt-8">
-        <button className="bg-white text-black px-5 py-2 rounded-lg font-semibold">
-          + New Note
-        </button>
-      </div>
+      <button className="mt-8 bg-white text-black px-5 py-2 rounded-lg font-semibold">
+        + New Note
+      </button>
 
       <div className="mt-8 border border-gray-800 rounded-xl p-6">
         <h2 className="text-xl font-semibold">
@@ -24,6 +22,6 @@ export default function NotesPage() {
           No notes yet.
         </p>
       </div>
-    </main>
+    </>
   );
 }
