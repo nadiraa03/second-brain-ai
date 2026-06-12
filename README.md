@@ -1,3 +1,17 @@
+Second Brain AI
+
+A knowledge management application built with:
+- Next.js
+- TypeScript
+- Tailwind CSS
+- Vercel
+
+Features:
+- Notes management
+- Knowledge graph visualization
+- AI-powered insights (planned)
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
